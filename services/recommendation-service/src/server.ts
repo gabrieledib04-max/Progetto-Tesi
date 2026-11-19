@@ -1,18 +1,18 @@
 import Fastify from 'fastify';
 import dotenv from 'dotenv';
+import { rankRoutes } from './routes/rank.routes.js';
+import { config } from './config.js';
 
 dotenv.config();
-
-const port = parseInt(process.env.PORT || process.env.RECOMMENDATION_PORT || '3002', 10);
-const host = process.env.HOST || '0.0.0.0';
 
 export async function buildRecommendationApp() {
   const app = Fastify({
     logger: {
-      level: process.env.LOG_LEVEL || 'info',
+      level: config.logLevel,
     },
   });
 
+  // Health check
   app.get('/health', async (_req, _reply) => {
     return {
       status: 'UP',
@@ -23,14 +23,17 @@ export async function buildRecommendationApp() {
     };
   });
 
+  // Register internal ranking routes
+  await app.register(rankRoutes);
+
   return app;
 }
 
 async function start() {
   try {
     const app = await buildRecommendationApp();
-    await app.listen({ port, host });
-    app.log.info(`[recommendation-service] Running at http://${host}:${port}`);
+    await app.listen({ port: config.port, host: config.host });
+    app.log.info(`[recommendation-service] Running at http://${config.host}:${config.port}`);
   } catch (err) {
     console.error('Fatal error starting recommendation-service:', err);
     process.exit(1);
