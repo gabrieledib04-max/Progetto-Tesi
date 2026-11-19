@@ -1,0 +1,23 @@
+{
+  "name": "eventspot-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EventSpot - Context-Driven & Session-Based Live Music Recommender System",
+  "workspaces": [
+    "packages/*",
+    "services/*",
+    "frontend"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "dev:gateway": "npm --prefix services/api-gateway run dev",
+    "dev:ingestion": "npm --prefix services/ingestion-service run dev",
+    "dev:recommendation": "npm --prefix services/recommendation-service run dev",
+    "dev:frontend": "npm --prefix frontend run dev"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@eventspot/ingestion-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "tsx watch src/server.ts"
+  },
+  "dependencies": {
+    "@eventspot/shared": "*",
+    "dotenv": "^16.4.7",
+    "fastify": "^5.2.0",
+    "mongoose": "^8.9.5",
+    "undici": "^7.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

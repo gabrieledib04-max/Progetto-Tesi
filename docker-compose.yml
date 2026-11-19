@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: eventspot-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: eventspot
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - eventspot-net
+
+  ingestion-service:
+    build:
+      context: .
+      dockerfile: services/ingestion-service/Dockerfile
+    container_name: eventspot-ingestion
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - HOST=0.0.0.0
+      - MONGODB_URI=mongodb://mongodb:27017/eventspot
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
+      - TICKETMASTER_API_KEY=${TICKETMASTER_API_KEY}
+      - MOCK_EXTERNAL_PROVIDERS=${MOCK_EXTERNAL_PROVIDERS:-true}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - eventspot-net
+
+  recommendation-service:
+    build:
+      context: .
+      dockerfile: services/recommendation-service/Dockerfile
+    container_name: eventspot-recommendation
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+      - HOST=0.0.0.0
+      - WEIGHT_SESSION_SEMANTIC=${WEIGHT_SESSION_SEMANTIC:-0.40}
+      - WEIGHT_TIME_CONGRUENCE=${WEIGHT_TIME_CONGRUENCE:-0.20}
+      - WEIGHT_SPATIAL_DECAY=${WEIGHT_SPATIAL_DECAY:-0.30}
+      - WEIGHT_WEATHER_COMPATIBILITY=${WEIGHT_WEATHER_COMPATIBILITY:-0.10}
+      - FALLBACK_WEIGHT_TIME=${FALLBACK_WEIGHT_TIME:-0.30}
+      - FALLBACK_WEIGHT_SPATIAL=${FALLBACK_WEIGHT_SPATIAL:-0.55}
+      - FALLBACK_WEIGHT_WEATHER=${FALLBACK_WEIGHT_WEATHER:-0.15}
+    networks:
+      - eventspot-net
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    container_name: eventspot-gateway
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - HOST=0.0.0.0
+      - CLIENT_URL=${CLIENT_URL:-http://localhost:5173}
+      - MONGODB_URI=mongodb://mongodb:27017/eventspot
+      - INGESTION_SERVICE_URL=http://ingestion-service:3001
+      - RECOMMENDATION_SERVICE_URL=http://recommendation-service:3002
+      - TOKEN_ENCRYPTION_KEY=${TOKEN_ENCRYPTION_KEY}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
+      - SPOTIFY_REDIRECT_URI=${SPOTIFY_REDIRECT_URI:-http://localhost:3000/v1/auth/callback}
+      - SPOTIFY_SCOPES=${SPOTIFY_SCOPES:-user-read-recently-played user-read-currently-playing}
+      - MOCK_EXTERNAL_PROVIDERS=${MOCK_EXTERNAL_PROVIDERS:-true}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      ingestion-service:
+        condition: service_started
+      recommendation-service:
+        condition: service_started
+    networks:
+      - eventspot-net
+
+networks:
+  eventspot-net:
+    driver: bridge
+
+volumes:
+  mongo_data:
