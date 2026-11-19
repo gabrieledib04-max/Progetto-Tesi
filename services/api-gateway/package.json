@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "tsx watch src/server.ts"
+    "dev": "tsx watch src/server.ts",
+    "test": "node tests/auth.test.js"
   },
   "dependencies": {
     "@eventspot/shared": "*",
@@ -18,6 +19,7 @@
     "@fastify/swagger-ui": "^5.2.0",
     "dotenv": "^16.4.7",
     "fastify": "^5.2.0",
+    "mongoose": "^8.9.5",
     "undici": "^7.1.0"
   },
   "devDependencies": {
