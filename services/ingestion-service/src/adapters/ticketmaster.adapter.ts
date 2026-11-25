@@ -117,6 +117,14 @@ export class TicketmasterAdapter {
     return null;
   }
 
+  private formatTicketmasterIso(isoOrDate: string): string {
+    const parsed = new Date(isoOrDate);
+    if (Number.isNaN(parsed.getTime())) {
+      return new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+    }
+    return parsed.toISOString().replace(/\.\d{3}Z$/, 'Z');
+  }
+
   private async fetchLiveTicketmasterEvents(params: {
     lat: number;
     lon: number;
@@ -127,22 +135,34 @@ export class TicketmasterAdapter {
     const url = new URL(`${config.ticketmaster.baseUrl}/events.json`);
     url.searchParams.set('apikey', config.ticketmaster.apiKey);
     url.searchParams.set('classificationName', 'music');
-    url.searchParams.set('latlong', `${params.lat},${params.lon}`);
-    url.searchParams.set('radius', params.radiusKm.toString());
+    // Ticketmaster Discovery v2 prefers Base32 geoPoint over deprecated latlong
+    url.searchParams.set('geoPoint', encodeGeohash(params.lat, params.lon, 7));
+    url.searchParams.set('radius', Math.min(200, Math.max(10, Math.round(params.radiusKm))).toString());
     url.searchParams.set('unit', 'km');
-    url.searchParams.set('startDateTime', params.dateFrom);
-    url.searchParams.set('endDateTime', params.dateTo);
-    url.searchParams.set('size', '50');
+    // Strictly strip milliseconds (.000Z -> Z) to avoid Ticketmaster 400 validation errors
+    url.searchParams.set('startDateTime', this.formatTicketmasterIso(params.dateFrom));
+    url.searchParams.set('endDateTime', this.formatTicketmasterIso(params.dateTo));
+    url.searchParams.set('sort', 'date,asc');
+    url.searchParams.set('size', '100');
 
-    const res = await fetch(url.toString());
-    if (!res.ok) {
-      throw new Error(`Ticketmaster API returned status ${res.status}: ${await res.text()}`);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4500);
+
+    try {
+      const res = await fetch(url.toString(), { signal: controller.signal });
+      if (!res.ok) {
+        throw new Error(`Ticketmaster API returned status ${res.status}: ${await res.text()}`);
+      }
+
+      const data = (await res.json()) as any;
+      const rawEvents = data._embedded?.events || [];
+
+      return rawEvents
+        .map((raw: any) => this.normalizeRawEvent(raw))
+        .filter((ev: NormalizedEvent) => ev.venue.lat !== 0 && ev.venue.lon !== 0);
+    } finally {
+      clearTimeout(timeoutId);
     }
-
-    const data = (await res.json()) as any;
-    const rawEvents = data._embedded?.events || [];
-
-    return rawEvents.map((raw: any) => this.normalizeRawEvent(raw));
   }
 
   private normalizeRawEvent(raw: any): NormalizedEvent {

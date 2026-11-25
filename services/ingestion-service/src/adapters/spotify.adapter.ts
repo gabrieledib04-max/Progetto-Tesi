@@ -119,6 +119,27 @@ export class SpotifyAdapter {
       const uniqueArtistIds = Array.from(new Set(allTracks.map((t) => t.artistId).filter(Boolean)));
       const artistGenreMap = await this.fetchArtistGenres(accessToken, uniqueArtistIds);
 
+      // 3b. Fallback enrichment via Last.fm / MusicBrainz if Spotify returned genres: [] (FR-03)
+      const missingArtists = new Map<string, string>();
+      for (const t of allTracks) {
+        const existing = artistGenreMap.get(t.artistId) || [];
+        if (existing.length === 0 && !missingArtists.has(t.artistId)) {
+          missingArtists.set(t.artistId, t.artistName);
+        }
+      }
+      if (missingArtists.size > 0) {
+        await Promise.all(
+          Array.from(missingArtists.entries())
+            .slice(0, 5)
+            .map(async ([artistId, artistName]) => {
+              const tags = await this.fetchSecondaryArtistTags(artistName);
+              if (tags.length > 0) {
+                artistGenreMap.set(artistId, tags);
+              }
+            })
+        );
+      }
+
       // 4. Calculate exponential decay on recency: alpha_k = exp(-lambda * (k - 1))
       const tagWeights = new Map<string, number>();
       const sessionArtistsSet = new Set<string>();
@@ -148,7 +169,7 @@ export class SpotifyAdapter {
       return {
         sessionTags,
         sessionArtists: Array.from(sessionArtistsSet),
-        isSessionEmpty: sessionTags.length === 0,
+        isSessionEmpty: sessionTags.length === 0 && sessionArtistsSet.size === 0,
       };
     } catch (err: any) {
       console.warn(`[SpotifyAdapter] Live fetch failed: ${err.message}. Returning empty session context.`);
@@ -178,6 +199,74 @@ export class SpotifyAdapter {
       }
     }
     return map;
+  }
+
+  /**
+   * Secondary genre/tag lookup via Last.fm (with MusicBrainz fallback when no key)
+   */
+  private async fetchSecondaryArtistTags(artistName: string): Promise<string[]> {
+    // 1. Try Last.fm artist.getTopTags if LASTFM_API_KEY is configured
+    if (config.lastFm.apiKey) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1500);
+      try {
+        const url = new URL('https://ws.audioscrobbler.com/2.0/');
+        url.searchParams.set('method', 'artist.gettoptags');
+        url.searchParams.set('artist', artistName);
+        url.searchParams.set('api_key', config.lastFm.apiKey);
+        url.searchParams.set('format', 'json');
+        url.searchParams.set('autocorrect', '1');
+
+        const res = await fetch(url.toString(), { signal: controller.signal });
+        if (res.ok) {
+          const data = (await res.json()) as any;
+          const rawTags = data?.toptags?.tag || [];
+          const noise = new Set(['seen live', 'favorites', 'favourite', 'under 2000 listeners']);
+          const cleanTags = rawTags
+            .slice(0, 6)
+            .map((t: any) => String(t.name || '').toLowerCase().trim())
+            .filter((name: string) => name.length > 1 && !noise.has(name))
+            .slice(0, 4);
+          if (cleanTags.length > 0) return cleanTags;
+        }
+      } catch {
+        // Silent degradation per TRD Section 6
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    }
+
+    // 2. Fallback to open MusicBrainz artist search (no API key required)
+    const mbController = new AbortController();
+    const mbTimeoutId = setTimeout(() => mbController.abort(), 1500);
+    try {
+      const mbUrl = new URL('https://musicbrainz.org/ws/2/artist/');
+      mbUrl.searchParams.set('query', `artist:"${artistName}"`);
+      mbUrl.searchParams.set('fmt', 'json');
+      mbUrl.searchParams.set('limit', '1');
+
+      const res = await fetch(mbUrl.toString(), {
+        signal: mbController.signal,
+        headers: {
+          'User-Agent': 'EventSpot/2.2 (Politecnico-di-Bari-Thesis)',
+          Accept: 'application/json',
+        },
+      });
+      if (res.ok) {
+        const data = (await res.json()) as any;
+        const tags = data?.artists?.[0]?.tags || [];
+        return tags
+          .slice(0, 4)
+          .map((t: any) => String(t.name || '').toLowerCase().trim())
+          .filter(Boolean);
+      }
+    } catch {
+      // Silent degradation
+    } finally {
+      clearTimeout(mbTimeoutId);
+    }
+
+    return [];
   }
 
   private getMockSessionContext(): SpotifySessionContextResult {
