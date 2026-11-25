@@ -76,7 +76,7 @@ services:
       - NODE_ENV=development
       - PORT=3000
       - HOST=0.0.0.0
-      - CLIENT_URL=${CLIENT_URL:-http://localhost:5173}
+      - CLIENT_URL=${CLIENT_URL:-http://127.0.0.1:5173}
       - MONGODB_URI=mongodb://mongodb:27017/eventspot
       - INGESTION_SERVICE_URL=http://ingestion-service:3001
       - RECOMMENDATION_SERVICE_URL=http://recommendation-service:3002
@@ -85,7 +85,7 @@ services:
       - COOKIE_SECRET=${COOKIE_SECRET}
       - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
       - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
-      - SPOTIFY_REDIRECT_URI=${SPOTIFY_REDIRECT_URI:-http://localhost:3000/v1/auth/callback}
+      - SPOTIFY_REDIRECT_URI=${SPOTIFY_REDIRECT_URI:-http://127.0.0.1:3000/v1/auth/callback}
       - SPOTIFY_SCOPES=${SPOTIFY_SCOPES:-user-read-recently-played user-read-currently-playing}
       - MOCK_EXTERNAL_PROVIDERS=${MOCK_EXTERNAL_PROVIDERS:-true}
     depends_on:

@@ -6,6 +6,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 dotenv.config();
 
+const rawSpotifyClientId = (process.env.SPOTIFY_CLIENT_ID || '').trim();
+const rawSpotifyClientSecret = (process.env.SPOTIFY_CLIENT_SECRET || '').trim();
+const rawTicketmasterKey = (process.env.TICKETMASTER_API_KEY || '').trim();
+const rawLastFmKey = (process.env.LASTFM_API_KEY || '').trim();
+
+const clean = (val: string) => (val && !val.startsWith('your_') ? val : '');
+
 export interface IngestionConfig {
   nodeEnv: string;
   port: number;
@@ -42,12 +49,12 @@ export const config: IngestionConfig = {
   mongodbUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/eventspot',
 
   spotify: {
-    clientId: process.env.SPOTIFY_CLIENT_ID || '',
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET || '',
+    clientId: clean(rawSpotifyClientId),
+    clientSecret: clean(rawSpotifyClientSecret),
   },
 
   ticketmaster: {
-    apiKey: process.env.TICKETMASTER_API_KEY || '',
+    apiKey: clean(rawTicketmasterKey),
     baseUrl: 'https://app.ticketmaster.com/discovery/v2',
   },
 
@@ -56,9 +63,10 @@ export const config: IngestionConfig = {
   },
 
   lastFm: {
-    apiKey: process.env.LASTFM_API_KEY,
+    apiKey: clean(rawLastFmKey) || undefined,
   },
 
-  mockExternalProviders:
-    process.env.MOCK_EXTERNAL_PROVIDERS === 'true' || !process.env.TICKETMASTER_API_KEY,
+  // Stay in mock mode unless explicitly enabled via MOCK_EXTERNAL_PROVIDERS=false
+  // (Individual adapters also check if their specific API key / accessToken is present)
+  mockExternalProviders: process.env.MOCK_EXTERNAL_PROVIDERS !== 'false',
 };

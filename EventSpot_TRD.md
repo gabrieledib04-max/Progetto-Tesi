@@ -253,7 +253,7 @@ Ogni errore restituisce `Content-Type: application/problem+json` con campi `type
 ### 7.2 Configurazione Variabili d'Ambiente (`.env`)
 
 Tutte le chiavi devono essere inserite in `.env` nella root del progetto (copiato da `.env.example`, escluso da Git via `.gitignore`):
-* `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REDIRECT_URI=http://localhost:3000/v1/auth/callback`
+* `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REDIRECT_URI=http://127.0.0.1:3000/v1/auth/callback` (Spotify vieta esplicitamente `localhost` e richiede l'IP di loopback `127.0.0.1` o HTTPS)
 * `TICKETMASTER_API_KEY`
 * `LASTFM_API_KEY` (opzionale, arricchimento generi secondario)
 * `TOKEN_ENCRYPTION_KEY` (64 caratteri hex = 32 byte per AES-256-GCM)

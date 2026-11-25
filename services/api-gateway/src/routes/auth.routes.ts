@@ -31,7 +31,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
     // Save attempt with 10 min TTL in MongoDB
     await sessionService.createAuthAttempt(state, verifier);
 
-    if (query.mock || (config.mockExternalProviders && !config.spotify.clientId)) {
+    if (query.mock || config.mockExternalProviders || !config.spotify.clientId) {
       // Direct mock redirect for seamless sandbox evaluation
       const callbackUrl = `/v1/auth/callback?code=mock_code_${crypto.randomBytes(8).toString('hex')}&state=${state}`;
       return reply.redirect(callbackUrl);
