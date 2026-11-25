@@ -247,4 +247,52 @@ export const matchesRoutes: FastifyPluginAsync = async (app) => {
     const event = await res.json();
     return reply.send({ success: true, event });
   });
+
+  /**
+   * POST /v1/events/organizer (Local promoter / independent club event submission - FR-13)
+   */
+  app.post('/events/organizer', {
+    schema: {
+      tags: ['Discovery'],
+      summary: 'Register a local live concert directly (independent clubs & organizers)',
+      body: {
+        type: 'object',
+        required: ['name', 'artistNames', 'genres', 'startDateTime', 'venueName', 'city', 'lat', 'lon'],
+        properties: {
+          name: { type: 'string', minLength: 2 },
+          artistNames: { type: 'array', items: { type: 'string' }, minItems: 1 },
+          genres: { type: 'array', items: { type: 'string' }, minItems: 1 },
+          startDateTime: { type: 'string' },
+          venueName: { type: 'string' },
+          city: { type: 'string' },
+          address: { type: 'string' },
+          lat: { type: 'number', minimum: -90, maximum: 90 },
+          lon: { type: 'number', minimum: -180, maximum: 180 },
+          isOutdoor: { type: 'boolean' },
+          priceMin: { type: 'number', minimum: 0 },
+          priceMax: { type: 'number', minimum: 0 },
+          ticketUrl: { type: 'string' },
+          imageUrl: { type: 'string' },
+        },
+      },
+    },
+  }, async (req, reply) => {
+    const correlationId = (req as any).correlationId;
+
+    const res = await fetch(`${config.ingestionServiceUrl}/internal/events/organizer`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-correlation-id': correlationId,
+      },
+      body: JSON.stringify(req.body),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Organizer event registration failed: ${await res.text()}`);
+    }
+
+    const payload = await res.json();
+    return reply.status(201).send(payload);
+  });
 };

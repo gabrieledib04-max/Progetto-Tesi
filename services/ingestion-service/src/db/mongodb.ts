@@ -69,11 +69,29 @@ export const WeatherCacheModel =
   mongoose.models.WeatherCache ||
   mongoose.model<IWeatherCacheDoc>('WeatherCache', WeatherCacheSchema, 'weather_cache');
 
+// 4. Local Organizer / Promoter Submitted Events (Public Catalog, TTL expires after event date)
+export interface IOrganizerEventDoc extends Document {
+  eventId: string;
+  event: NormalizedEvent;
+  expiresAt: Date;
+}
+
+const OrganizerEventSchema = new Schema<IOrganizerEventDoc>({
+  eventId: { type: String, required: true, unique: true },
+  event: { type: Schema.Types.Mixed, required: true },
+  expiresAt: { type: Date, required: true, expires: 0 }, // Auto-purged once concert date passes
+});
+
+export const OrganizerEventModel =
+  mongoose.models.OrganizerEvent ||
+  mongoose.model<IOrganizerEventDoc>('OrganizerEvent', OrganizerEventSchema, 'organizer_events');
+
 // In-Memory Fallback Store
 export const inMemoryIngestionStore = {
   sessionContexts: new Map<string, { tags: SessionTag[]; artistNames: string[]; trackCount: number; fetchedAt: Date }>(),
   events: new Map<string, { events: NormalizedEvent[]; freshUntil: Date; staleUntil: Date }>(),
   weather: new Map<string, { current: { wmoCode: number; precipMm: number; tempC: number; isAdverse: boolean }; fetchedAt: Date }>(),
+  organizerEvents: new Map<string, NormalizedEvent>(),
 };
 
 let isConnected = false;

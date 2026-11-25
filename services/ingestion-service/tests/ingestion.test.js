@@ -1,6 +1,7 @@
 import { buildIngestionApp } from '../dist/server.js';
 import { connectIngestionDatabase } from '../dist/db/mongodb.js';
 import { encodeGeohash, bucketRadius } from '../dist/utils/geohash.js';
+import { eventAggregatorService } from '../dist/services/event-aggregator.service.js';
 
 async function testIngestion() {
   console.log('🧪 Starting Ingestion Service Integration Verification...');
@@ -96,7 +97,74 @@ async function testIngestion() {
   }
   console.log(`✅ Single event lookup verified: ${singleEvent.name} (venue: ${singleEvent.venue.name}, outdoor: ${singleEvent.venue.isOutdoor})`);
 
-  // 6. Purge session context cache
+  // 6. Verify Multi-Provider Deterministic Deduplication (FR-13)
+  const deduped = eventAggregatorService.deduplicateEvents([
+    {
+      id: 'mb_dup_1',
+      name: 'Indie Club Live',
+      artistNames: ['Calcutta'],
+      genres: ['it-pop'],
+      startDateTime: '2026-12-15T21:00:00Z',
+      venue: { name: 'Eremo Club', city: 'Molfetta', country: 'IT', lat: 41.1869, lon: 16.6186, isOutdoor: false },
+      priceStatus: 'UNAVAILABLE',
+      ticketUrl: 'https://musicbrainz.org/event/1',
+      imageUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80',
+    },
+    {
+      id: 'jb_dup_1',
+      name: 'Calcutta Tour',
+      artistNames: ['Calcutta', 'Gazzelle'],
+      genres: ['indie pop italiano'],
+      startDateTime: '2026-12-15T21:30:00Z',
+      venue: { name: 'Eremo Club', city: 'Molfetta', country: 'IT', lat: 41.18691, lon: 16.61861, isOutdoor: false },
+      priceRange: { min: 22, max: 30, currency: 'EUR' },
+      priceStatus: 'AVAILABLE',
+      ticketUrl: 'https://jambase.com/1',
+      imageUrl: 'https://example.com/poster.jpg',
+    },
+  ]);
+  if (
+    deduped.length !== 1 ||
+    !deduped[0].genres.includes('it-pop') ||
+    !deduped[0].genres.includes('indie pop italiano') ||
+    deduped[0].priceRange?.min !== 22
+  ) {
+    throw new Error(`Multi-provider deduplication failed: ${JSON.stringify(deduped)}`);
+  }
+  console.log('✅ Multi-provider deterministic deduplication verified (merged genres + priceRange)');
+
+  // 7. Verify Organizer Portal Submission (FR-13)
+  const orgRes = await app.inject({
+    method: 'POST',
+    url: '/internal/events/organizer',
+    payload: {
+      name: 'PoliBa Indie Acoustic Night',
+      artistNames: ['Nuovi Talenti Bari'],
+      genres: ['indie rock', 'acoustic'],
+      startDateTime: new Date(Date.now() + 3 * 86400000).toISOString(),
+      venueName: 'Auditorium Campus Bari',
+      city: 'Bari',
+      lat: 41.1092,
+      lon: 16.8789,
+      isOutdoor: false,
+      priceMin: 10,
+      priceMax: 15,
+    },
+  });
+  if (orgRes.statusCode !== 201) {
+    throw new Error(`/internal/events/organizer returned ${orgRes.statusCode}: ${orgRes.payload}`);
+  }
+  const orgCreated = JSON.parse(orgRes.payload);
+  const orgLookupRes = await app.inject({
+    method: 'GET',
+    url: `/internal/events/${orgCreated.event.id}`,
+  });
+  if (orgLookupRes.statusCode !== 200) {
+    throw new Error('Organizer-submitted event not found via /internal/events/:id');
+  }
+  console.log(`✅ Organizer Portal submission & lookup verified: ${orgCreated.event.id}`);
+
+  // 8. Purge session context cache
   const purgeRes = await app.inject({
     method: 'DELETE',
     url: '/internal/context/cache/test_session_hash_123',

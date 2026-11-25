@@ -224,6 +224,7 @@ Chiave nel browser: `eventspot_favorites_v1`. Contiene un array JSON di snapshot
 | `DELETE` | `/v1/auth/me` | Diritto all'oblio GDPR: elimina sessione, token cifrati e `session_context_cache`. |
 | `GET` | `/v1/matches` | Restituisce la lista ordinata di eventi *Context-Driven* (per feed e heatmap). |
 | `GET` | `/v1/events` | Ricerca libera (Discovery) senza personalizzazione di sessione. |
+| `POST` | `/v1/events/organizer` | Registrazione diretta di un concerto locale da parte di club indipendenti / promoter (`FR-13`). |
 | `GET` | `/v1/events/{eventId}` | Dettaglio normalizzato del singolo evento. |
 | `GET` | `/v1/health` | Stato di salute del gateway e dei microservizi downstream. |
 | `GET` | `/v1/docs` | Interfaccia OpenAPI 3.1 interattiva e download YAML/JSON. |

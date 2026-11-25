@@ -10,6 +10,8 @@ const rawSpotifyClientId = (process.env.SPOTIFY_CLIENT_ID || '').trim();
 const rawSpotifyClientSecret = (process.env.SPOTIFY_CLIENT_SECRET || '').trim();
 const rawTicketmasterKey = (process.env.TICKETMASTER_API_KEY || '').trim();
 const rawLastFmKey = (process.env.LASTFM_API_KEY || '').trim();
+const rawJamBaseKey = (process.env.JAMBASE_API_KEY || '').trim();
+const rawFeedUrls = (process.env.EVENT_FEED_URLS || '').trim();
 
 const clean = (val: string) => (val && !val.startsWith('your_') ? val : '');
 
@@ -29,6 +31,14 @@ export interface IngestionConfig {
     apiKey: string;
     baseUrl: string;
   };
+
+  jamBase: {
+    apiKey?: string;
+    baseUrl: string;
+  };
+
+  eventFeedUrls: string[];
+  enableFreeEventAdapters: boolean;
 
   openMeteo: {
     baseUrl: string;
@@ -57,6 +67,20 @@ export const config: IngestionConfig = {
     apiKey: clean(rawTicketmasterKey),
     baseUrl: 'https://app.ticketmaster.com/discovery/v2',
   },
+
+  jamBase: {
+    apiKey: clean(rawJamBaseKey) || undefined,
+    baseUrl: 'https://api.data.jambase.com/v3',
+  },
+
+  eventFeedUrls: rawFeedUrls
+    ? rawFeedUrls
+        .split(',')
+        .map((u) => u.trim())
+        .filter((u) => u.startsWith('http://') || u.startsWith('https://'))
+    : [],
+
+  enableFreeEventAdapters: process.env.ENABLE_FREE_EVENT_ADAPTERS !== 'false',
 
   openMeteo: {
     baseUrl: process.env.OPEN_METEO_BASE_URL || 'https://api.open-meteo.com/v1/forecast',

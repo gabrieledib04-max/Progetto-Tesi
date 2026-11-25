@@ -1,7 +1,8 @@
 import { FastifyPluginAsync } from 'fastify';
 import { spotifyAdapter } from '../adapters/spotify.adapter.js';
 import { openMeteoAdapter } from '../adapters/open-meteo.adapter.js';
-import { ticketmasterAdapter } from '../adapters/ticketmaster.adapter.js';
+import { eventAggregatorService } from '../services/event-aggregator.service.js';
+import { organizerEventsAdapter, CreateOrganizerEventInput } from '../adapters/organizer.adapter.js';
 import { ContextVector, TimeSlot } from '@eventspot/shared';
 
 export const internalRoutes: FastifyPluginAsync = async (app) => {
@@ -70,7 +71,7 @@ export const internalRoutes: FastifyPluginAsync = async (app) => {
 
   /**
    * GET /internal/events/search
-   * Returns candidate live events from Ticketmaster with caching
+   * Aggregates candidate live events across enabled providers with caching & deduplication
    */
   app.get('/events/search', {
     schema: {
@@ -95,7 +96,7 @@ export const internalRoutes: FastifyPluginAsync = async (app) => {
       dateTo?: string;
     };
 
-    const result = await ticketmasterAdapter.searchEvents({
+    const result = await eventAggregatorService.searchEvents({
       lat: Number(query.lat),
       lon: Number(query.lon),
       radiusKm: Number(query.radiusKm) || 50,
@@ -107,12 +108,45 @@ export const internalRoutes: FastifyPluginAsync = async (app) => {
   });
 
   /**
+   * POST /internal/events/organizer
+   * Registers a local venue / organizer event in the catalog
+   */
+  app.post('/events/organizer', {
+    schema: {
+      body: {
+        type: 'object',
+        required: ['name', 'artistNames', 'genres', 'startDateTime', 'venueName', 'city', 'lat', 'lon'],
+        properties: {
+          name: { type: 'string', minLength: 2 },
+          artistNames: { type: 'array', items: { type: 'string' }, minItems: 1 },
+          genres: { type: 'array', items: { type: 'string' }, minItems: 1 },
+          startDateTime: { type: 'string' },
+          venueName: { type: 'string' },
+          city: { type: 'string' },
+          address: { type: 'string' },
+          lat: { type: 'number' },
+          lon: { type: 'number' },
+          isOutdoor: { type: 'boolean' },
+          priceMin: { type: 'number' },
+          priceMax: { type: 'number' },
+          ticketUrl: { type: 'string' },
+          imageUrl: { type: 'string' },
+        },
+      },
+    },
+  }, async (req, reply) => {
+    const body = req.body as CreateOrganizerEventInput;
+    const created = await organizerEventsAdapter.addEvent(body);
+    return reply.status(201).send({ success: true, event: created });
+  });
+
+  /**
    * GET /internal/events/:eventId
    * Returns details for a single normalized event
    */
   app.get('/events/:eventId', async (req, reply) => {
     const { eventId } = req.params as { eventId: string };
-    const event = await ticketmasterAdapter.getEventById(eventId);
+    const event = await eventAggregatorService.getEventById(eventId);
     if (!event) {
       return reply.status(404).send({ error: 'Event not found' });
     }
