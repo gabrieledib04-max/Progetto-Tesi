@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { X, Calendar, MapPin, ExternalLink, ShieldCheck, Sun, Heart, Euro } from 'lucide-react';
+import { X, Calendar, MapPin, ExternalLink, ShieldCheck, Sun, Heart, Euro, Sparkles } from 'lucide-react';
 import { ScoredEvent } from '@eventspot/shared';
 
 interface EventDetailModalProps {
@@ -17,7 +17,6 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
   isFavorite,
   onToggleFavorite,
 }) => {
-  // Close on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -48,41 +47,45 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+      onClick={onClose}
+    >
       <div
-        className="relative w-full max-w-2xl bg-card border border-border-subtle rounded-3xl shadow-popover overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-150"
+        className="relative w-full max-w-2xl bg-card border border-border-active rounded-3xl shadow-popover overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Modal Header Media */}
+        {/* Header Image */}
         <div className="relative aspect-[21/9] w-full bg-card-subtle overflow-hidden">
           <img
-            src={event.imageUrl || 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&q=80'}
+            src={
+              event.imageUrl ||
+              'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&q=80'
+            }
             alt={event.name}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-black/55" />
 
-          {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full bg-black/60 hover:bg-black/90 text-white transition-colors"
-            aria-label="Chiudi"
+            className="absolute top-4 right-4 p-2 rounded-full bg-black/70 hover:bg-black text-white border border-white/10 transition-colors"
+            aria-label="Chiudi dettagli"
           >
             <X className="w-5 h-5" />
           </button>
 
-          {/* Score Badge */}
           <div className="absolute bottom-3 left-5">
-            <span className="px-3 py-1 rounded-xl bg-accent-amber text-slate-950 font-bold text-sm shadow-subtle">
-              {score}/100 Match Contestuale
+            <span className="px-3.5 py-1.5 rounded-full bg-accent-lime text-on-lime font-extrabold text-xs sm:text-sm shadow-lime">
+              {score}/100 Match contestuale
             </span>
           </div>
         </div>
 
-        {/* Modal Scrollable Body */}
+        {/* Scrollable Content */}
         <div className="p-6 overflow-y-auto space-y-5 text-sm">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white leading-tight">
               {event.name}
             </h2>
             {event.artistNames && event.artistNames.length > 0 && (
@@ -92,84 +95,78 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
             )}
           </div>
 
-          {/* Why Recommended Callout */}
-          <div className="bg-card-subtle/80 border border-border-subtle rounded-2xl p-4 space-y-1">
-            <h4 className="text-xs font-semibold text-accent-amber uppercase tracking-wider">
-              Motivazione della Raccomandazione:
+          {/* Explainability */}
+          <div className="bg-card-subtle rounded-2xl p-4 space-y-1.5 border border-border-subtle">
+            <h4 className="text-xs font-bold text-accent-lime flex items-center space-x-1.5">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Perché ti viene raccomandato</span>
             </h4>
             <p className="text-text-secondary leading-relaxed text-xs sm:text-sm">
               {naturalLanguageReason}
             </p>
           </div>
 
-          {/* Event Details Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* When */}
-            <div className="bg-card-subtle/50 p-3.5 rounded-2xl border border-border-subtle flex items-start space-x-3">
-              <Calendar className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
+          {/* Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div className="bg-card-subtle p-3.5 rounded-2xl border border-border-subtle flex items-start space-x-3">
+              <Calendar className="w-5 h-5 text-accent-lime flex-shrink-0 mt-0.5" />
               <div>
                 <span className="text-xs text-text-muted block">Data e orario</span>
-                <span className="font-semibold text-white capitalize block">{dateFormatted}</span>
-                <span className="text-xs text-text-secondary">Inizio live alle ore {timeFormatted}</span>
+                <span className="font-bold text-white capitalize block">{dateFormatted}</span>
+                <span className="text-xs text-text-secondary">Inizio alle ore {timeFormatted}</span>
               </div>
             </div>
 
-            {/* Where */}
-            <div className="bg-card-subtle/50 p-3.5 rounded-2xl border border-border-subtle flex items-start space-x-3">
-              <MapPin className="w-5 h-5 text-accent-sky flex-shrink-0 mt-0.5" />
+            <div className="bg-card-subtle p-3.5 rounded-2xl border border-border-subtle flex items-start space-x-3">
+              <MapPin className="w-5 h-5 text-accent-lime flex-shrink-0 mt-0.5" />
               <div>
-                <span className="text-xs text-text-muted block">Luogo & Distanza</span>
-                <span className="font-semibold text-white block">{event.venue.name}</span>
+                <span className="text-xs text-text-muted block">Luogo e distanza</span>
+                <span className="font-bold text-white block">{event.venue.name}</span>
                 <span className="text-xs text-text-secondary">
                   {event.venue.city} ({distanceKm} km da te)
                 </span>
               </div>
             </div>
 
-            {/* Venue Type */}
-            <div className="bg-card-subtle/50 p-3.5 rounded-2xl border border-border-subtle flex items-start space-x-3">
+            <div className="bg-card-subtle p-3.5 rounded-2xl border border-border-subtle flex items-start space-x-3">
               {event.venue.isOutdoor ? (
                 <Sun className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
               ) : (
-                <ShieldCheck className="w-5 h-5 text-accent-emerald flex-shrink-0 mt-0.5" />
+                <ShieldCheck className="w-5 h-5 text-accent-lime flex-shrink-0 mt-0.5" />
               )}
               <div>
-                <span className="text-xs text-text-muted block">Tipologia Venue</span>
-                <span className="font-semibold text-white block">
-                  {event.venue.isOutdoor ? 'Concerto all\'aperto (Outdoor)' : 'Club o Palazzetto al chiuso (Indoor)'}
+                <span className="text-xs text-text-muted block">Tipologia venue</span>
+                <span className="font-bold text-white block">
+                  {event.venue.isOutdoor ? "All'aperto (Outdoor)" : 'Al chiuso (Indoor)'}
                 </span>
                 <span className="text-xs text-text-secondary">
-                  {event.venue.isOutdoor ? 'Soggetto a condizioni meteo' : 'Protetto da pioggia e maltempo'}
+                  {event.venue.isOutdoor ? 'Esposto alle condizioni meteo' : 'Protetto da pioggia e vento'}
                 </span>
               </div>
             </div>
 
-            {/* Price */}
-            <div className="bg-card-subtle/50 p-3.5 rounded-2xl border border-border-subtle flex items-start space-x-3">
-              <Euro className="w-5 h-5 text-accent-emerald flex-shrink-0 mt-0.5" />
+            <div className="bg-card-subtle p-3.5 rounded-2xl border border-border-subtle flex items-start space-x-3">
+              <Euro className="w-5 h-5 text-accent-lime flex-shrink-0 mt-0.5" />
               <div>
                 <span className="text-xs text-text-muted block">Biglietto d'ingresso</span>
-                <span className="font-semibold text-white block">
+                <span className="font-bold text-white block">
                   {event.priceRange
-                    ? `${event.priceRange.min} - ${event.priceRange.max} ${event.priceRange.currency || '€'}`
+                    ? `${event.priceRange.min} - ${event.priceRange.max} ${event.priceRange.currency === 'EUR' ? '€' : event.priceRange.currency}`
                     : 'Prezzo su Ticketmaster'}
                 </span>
-                <span className="text-xs text-text-secondary">
-                  Venditore ufficiale autorizzato
-                </span>
+                <span className="text-xs text-text-secondary">Biglietteria ufficiale</span>
               </div>
             </div>
           </div>
 
-          {/* Genres Tags */}
           {event.genres && event.genres.length > 0 && (
             <div className="space-y-1.5">
-              <span className="text-xs text-text-muted block">Classificazioni e Generi:</span>
+              <span className="text-xs text-text-muted block">Generi associati</span>
               <div className="flex flex-wrap gap-1.5">
                 {event.genres.map((g, i) => (
                   <span
                     key={i}
-                    className="px-2.5 py-1 rounded-lg bg-card-subtle border border-border-subtle text-xs text-text-secondary font-medium"
+                    className="px-3 py-1 rounded-full bg-card-subtle border border-border-subtle text-xs text-text-secondary font-medium"
                   >
                     {g}
                   </span>
@@ -179,25 +176,25 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
           )}
         </div>
 
-        {/* Modal Footer CTA */}
+        {/* Footer CTA */}
         <div className="p-4 sm:p-5 border-t border-border-subtle bg-surface flex items-center justify-between">
           <button
             onClick={onToggleFavorite}
-            className={`px-4 py-2.5 rounded-xl border text-xs font-semibold flex items-center space-x-2 transition-colors ${
+            className={`px-4 py-2.5 rounded-full border text-xs font-semibold flex items-center space-x-2 transition-colors ${
               isFavorite
                 ? 'bg-accent-rose text-white border-accent-rose'
-                : 'bg-card text-text-secondary border-border-subtle hover:text-white'
+                : 'bg-card-subtle text-white border-border-subtle hover:border-border-active'
             }`}
           >
             <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
-            <span>{isFavorite ? 'Salvato tra i preferiti' : 'Salva nei preferiti'}</span>
+            <span>{isFavorite ? 'Salvato' : 'Salva'}</span>
           </button>
 
           <a
             href={event.ticketUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-6 py-2.5 rounded-xl bg-accent-amber hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center space-x-2 transition-colors shadow-subtle"
+            className="px-6 py-2.5 rounded-full bg-accent-lime hover:bg-accent-lime-hover text-on-lime font-bold text-xs sm:text-sm flex items-center space-x-2 shadow-lime transition-colors"
           >
             <span>Acquista su Ticketmaster</span>
             <ExternalLink className="w-4 h-4" />
