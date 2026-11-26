@@ -61,7 +61,7 @@ export const IPhoneTabBar: React.FC<IPhoneTabBarProps> = ({
               onClick={() => onTabChange(tab.id)}
               className={`relative flex flex-col items-center justify-center py-2 px-1 rounded-[24px] active:scale-95 transition-transform transition-colors ${
                 isActive
-                  ? 'bg-white/[0.09] text-accent-lime'
+                  ? 'bg-white/[0.09] text-accent-primary'
                   : 'text-[#8c919b] hover:text-white'
               }`}
             >
@@ -77,7 +77,7 @@ export const IPhoneTabBar: React.FC<IPhoneTabBarProps> = ({
                   <span
                     className={`absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 rounded-full text-[10px] font-bold flex items-center justify-center leading-none ${
                       isActive
-                        ? 'bg-accent-lime text-on-lime'
+                        ? 'bg-accent-primary text-on-accent'
                         : 'bg-accent-rose text-white'
                     }`}
                   >
@@ -89,7 +89,7 @@ export const IPhoneTabBar: React.FC<IPhoneTabBarProps> = ({
                 {tab.dot && (
                   <span
                     className={`absolute -top-0.5 -right-1.5 w-2 h-2 rounded-full ring-2 ring-[#121316] ${
-                      isActive ? 'bg-accent-lime' : 'bg-accent-emerald'
+                      isActive ? 'bg-accent-primary' : 'bg-accent-emerald'
                     }`}
                   />
                 )}
@@ -97,7 +97,7 @@ export const IPhoneTabBar: React.FC<IPhoneTabBarProps> = ({
 
               <span
                 className={`text-[11px] leading-tight tracking-tight ${
-                  isActive ? 'font-semibold text-accent-lime' : 'font-medium'
+                  isActive ? 'font-semibold text-accent-primary' : 'font-medium'
                 }`}
               >
                 {tab.label}

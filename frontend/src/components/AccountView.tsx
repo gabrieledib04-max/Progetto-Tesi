@@ -41,7 +41,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
     <div className="space-y-6 max-w-3xl mx-auto">
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-          Il tuo <span className="text-accent-lime">account</span>
+          Il tuo <span className="text-accent-primary">account</span>
         </h1>
         <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
           Sessione effimera Spotify, contesto di ascolto attivo e controllo Privacy GDPR.
@@ -55,7 +55,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
             <div className="flex items-center space-x-2">
               <span
                 className={`w-2.5 h-2.5 rounded-full ${
-                  session.authenticated ? 'bg-accent-lime' : 'bg-text-muted'
+                  session.authenticated ? 'bg-accent-primary' : 'bg-text-muted'
                 }`}
               />
               <h2 className="text-base sm:text-lg font-bold text-white">
@@ -74,7 +74,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
               <button
                 onClick={onSpotifyLogin}
                 disabled={loading}
-                className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-accent-lime hover:bg-accent-lime-hover text-on-lime font-bold text-xs shadow-lime disabled:opacity-50"
+                className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-on-accent font-bold text-xs shadow-accent disabled:opacity-50"
               >
                 <Music className="w-4 h-4 stroke-[2.5]" />
                 <span>Connetti Spotify</span>
@@ -84,7 +84,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
                 disabled={loading}
                 className="inline-flex items-center space-x-1.5 px-4 py-2.5 rounded-full bg-card-subtle hover:bg-[#25282e] border border-border-active text-white font-semibold text-xs disabled:opacity-50"
               >
-                <Sparkles className="w-3.5 h-3.5 text-accent-lime" />
+                <Sparkles className="w-3.5 h-3.5 text-accent-primary" />
                 <span>Demo 1-Click</span>
               </button>
             </div>
@@ -96,7 +96,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div className="bg-card-subtle rounded-xl p-3.5 border border-border-subtle space-y-1">
                 <span className="text-text-muted flex items-center space-x-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-accent-lime" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-accent-primary" />
                   <span>Identificativo pseudonimizzato</span>
                 </span>
                 <p className="font-mono text-white font-semibold truncate">
@@ -118,7 +118,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
             <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-border-subtle">
               <button
                 onClick={onOpenPrivacyTab}
-                className="text-xs text-text-secondary hover:text-accent-lime underline underline-offset-4 transition-colors"
+                className="text-xs text-text-secondary hover:text-accent-primary underline underline-offset-4 transition-colors"
               >
                 Leggi dettagli Privacy-by-Design
               </button>
@@ -149,7 +149,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
       <section className="bg-card border border-border-subtle rounded-2xl p-5 sm:p-6 shadow-card space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm sm:text-base font-bold text-white flex items-center space-x-2">
-            <Radio className="w-4 h-4 text-accent-lime" />
+            <Radio className="w-4 h-4 text-accent-primary" />
             <span>Vettore generi della sessione corrente</span>
           </h3>
           <span className="text-xs text-text-muted font-mono">
@@ -163,13 +163,13 @@ export const AccountView: React.FC<AccountViewProps> = ({
               <div key={i} className="space-y-1 text-xs">
                 <div className="flex justify-between">
                   <span className="font-medium text-white capitalize">{tag.name}</span>
-                  <span className="font-mono text-accent-lime font-semibold">
+                  <span className="font-mono text-accent-primary font-semibold">
                     {(tag.weight * 100).toFixed(0)}%
                   </span>
                 </div>
                 <div className="h-1.5 w-full rounded-full bg-card-subtle overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-accent-lime"
+                    className="h-full rounded-full bg-accent-primary"
                     style={{ width: `${Math.min(100, Math.round(tag.weight * 100))}%` }}
                   />
                 </div>
@@ -184,7 +184,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
 
         <div className="pt-3 border-t border-border-subtle flex items-center justify-between text-xs text-text-muted">
           <span className="flex items-center space-x-1.5">
-            <MapPin className="w-3.5 h-3.5 text-accent-lime" />
+            <MapPin className="w-3.5 h-3.5 text-accent-primary" />
             <span>
               Coordinate correnti: {filters.lat.toFixed(4)}, {filters.lon.toFixed(4)}
             </span>

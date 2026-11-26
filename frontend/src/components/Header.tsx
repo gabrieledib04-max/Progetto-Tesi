@@ -18,7 +18,7 @@ export const Header: React.FC<HeaderProps> = ({ session, onGoToAccount, onGoHome
           className="flex items-center space-x-2.5 text-left group focus-visible:rounded-xl"
           aria-label="EventSpot Home"
         >
-          <div className="w-8 h-8 rounded-xl bg-accent-lime flex items-center justify-center text-on-lime shadow-lime group-hover:scale-105 transition-transform">
+          <div className="w-8 h-8 rounded-xl bg-accent-primary flex items-center justify-center text-on-accent shadow-accent group-hover:scale-105 transition-transform">
             <MapPin className="w-4 h-4 stroke-[2.75]" />
           </div>
           <span className="text-xl font-extrabold tracking-tight text-white">eventspot</span>
@@ -31,15 +31,15 @@ export const Header: React.FC<HeaderProps> = ({ session, onGoToAccount, onGoHome
         >
           {session.authenticated ? (
             <>
-              <span className="w-2 h-2 rounded-full bg-accent-lime" />
-              <UserCheck className="w-3.5 h-3.5 text-accent-lime" />
+              <span className="w-2 h-2 rounded-full bg-accent-primary" />
+              <UserCheck className="w-3.5 h-3.5 text-accent-primary" />
               <span className="font-mono text-text-secondary max-w-[96px] truncate">
                 {session.userHash?.slice(0, 8)}
               </span>
             </>
           ) : (
             <>
-              <Sparkles className="w-3.5 h-3.5 text-accent-lime" />
+              <Sparkles className="w-3.5 h-3.5 text-accent-primary" />
               <span>Accedi</span>
             </>
           )}

@@ -63,6 +63,11 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
               'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&q=80'
             }
             alt={event.name}
+            referrerPolicy="no-referrer"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src =
+                'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&q=80';
+            }}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-black/55" />
@@ -76,7 +81,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
           </button>
 
           <div className="absolute bottom-3 left-5">
-            <span className="px-3.5 py-1.5 rounded-full bg-accent-lime text-on-lime font-extrabold text-xs sm:text-sm shadow-lime">
+            <span className="px-3.5 py-1.5 rounded-full bg-accent-primary text-on-accent font-extrabold text-xs sm:text-sm shadow-accent">
               {score}/100 Match contestuale
             </span>
           </div>
@@ -97,7 +102,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
 
           {/* Explainability */}
           <div className="bg-card-subtle rounded-2xl p-4 space-y-1.5 border border-border-subtle">
-            <h4 className="text-xs font-bold text-accent-lime flex items-center space-x-1.5">
+            <h4 className="text-xs font-bold text-accent-primary flex items-center space-x-1.5">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Perché ti viene raccomandato</span>
             </h4>
@@ -109,7 +114,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
           {/* Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div className="bg-card-subtle p-3.5 rounded-2xl border border-border-subtle flex items-start space-x-3">
-              <Calendar className="w-5 h-5 text-accent-lime flex-shrink-0 mt-0.5" />
+              <Calendar className="w-5 h-5 text-accent-primary flex-shrink-0 mt-0.5" />
               <div>
                 <span className="text-xs text-text-muted block">Data e orario</span>
                 <span className="font-bold text-white capitalize block">{dateFormatted}</span>
@@ -118,7 +123,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
             </div>
 
             <div className="bg-card-subtle p-3.5 rounded-2xl border border-border-subtle flex items-start space-x-3">
-              <MapPin className="w-5 h-5 text-accent-lime flex-shrink-0 mt-0.5" />
+              <MapPin className="w-5 h-5 text-accent-primary flex-shrink-0 mt-0.5" />
               <div>
                 <span className="text-xs text-text-muted block">Luogo e distanza</span>
                 <span className="font-bold text-white block">{event.venue.name}</span>
@@ -132,7 +137,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
               {event.venue.isOutdoor ? (
                 <Sun className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
               ) : (
-                <ShieldCheck className="w-5 h-5 text-accent-lime flex-shrink-0 mt-0.5" />
+                <ShieldCheck className="w-5 h-5 text-accent-primary flex-shrink-0 mt-0.5" />
               )}
               <div>
                 <span className="text-xs text-text-muted block">Tipologia venue</span>
@@ -146,7 +151,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
             </div>
 
             <div className="bg-card-subtle p-3.5 rounded-2xl border border-border-subtle flex items-start space-x-3">
-              <Euro className="w-5 h-5 text-accent-lime flex-shrink-0 mt-0.5" />
+              <Euro className="w-5 h-5 text-accent-primary flex-shrink-0 mt-0.5" />
               <div>
                 <span className="text-xs text-text-muted block">Biglietto d'ingresso</span>
                 <span className="font-bold text-white block">
@@ -194,7 +199,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
             href={event.ticketUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-6 py-2.5 rounded-full bg-accent-lime hover:bg-accent-lime-hover text-on-lime font-bold text-xs sm:text-sm flex items-center space-x-2 shadow-lime transition-colors"
+            className="px-6 py-2.5 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-on-accent font-bold text-xs sm:text-sm flex items-center space-x-2 shadow-accent transition-colors"
           >
             <span>Acquista su Ticketmaster</span>
             <ExternalLink className="w-4 h-4" />

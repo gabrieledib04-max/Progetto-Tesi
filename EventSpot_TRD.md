@@ -73,7 +73,7 @@ EventSpot adotta un'architettura snella a **3 microservizi indipendenti** orches
 | **Runtime & Linguaggio** | Node.js 22 LTS + TypeScript 5 (`strict: true`) | Ecosistema asincrono I/O-bound ideale per orchestrazione API e microservizi leggeri. |
 | **Framework Backend** | Fastify 5 | Bassa latenza, validazione nativa JSON Schema, generazione automatica OpenAPI 3.1, logging `pino`. |
 | **Database & Cache** | MongoDB 7 (con TTL Indexes e indici geospaziali `2dsphere`) | Modello documentale naturale per payload JSON normalizzati; scadenza automatica dei dati effimeri via TTL. |
-| **Frontend** | React 19 + Vite + TypeScript + Tailwind CSS + Leaflet | SPA *mobile-first* in tema OLED/Acid-Lime, navigazione stile iPhone Tab Bar, **Mappa Termica** su Canvas HTML5 integrato in Leaflet, preferiti in `localStorage`. |
+| **Frontend** | React 19 + Vite + TypeScript + Tailwind CSS + Leaflet | SPA *mobile-first* in tema OLED/Carta da Zucchero, navigazione stile iPhone Tab Bar, **Mappa Termica** su Canvas HTML5 integrato in Leaflet, preferiti in `localStorage`. |
 | **Containerizzazione** | Docker + Docker Compose | Isolamento reale dei 3 microservizi e avvio riproducibile in un solo comando. |
 | **Testing & Load Test** | Node Integration Suites, OpenAPI 3.1 Validator, `k6` | Verifica automatizzata di logica, contratti OpenAPI e SLA (`NFR-P1`..`NFR-P5`). |
 | **Offline Evaluation** | Python 3.12 (`numpy`, `pandas`, `scikit-learn`) | Script dedicati nel modulo `evaluation/` per calcolare `Precision@10`, `NDCG@10`, `MRR` e `Coverage` nel confronto con la baseline 2D. |
@@ -155,13 +155,13 @@ Per ogni evento raccomandato, `recommendation-service` ispeziona i contributi pe
 
 ## 4. Frontend Design System, Menu iOS-Style & Mappa Termica
 
-### 4.1 Design System OLED & Acid Lime (`U-7`)
+### 4.1 Design System OLED & Ciano Carta da Zucchero (`U-7`)
 
 Per massimizzare leggibilità notturna e identità visiva moderna, la SPA adotta i seguenti token CSS root:
-* **Superfici:** `--bg-canvas: #000000` (nero OLED), `--bg-surface: #0c0d0f`, `--bg-card: #141517`, `--bg-card-subtle: #1c1d21`, `--border-subtle: #26282c`.
-* **Accento Primario:** `--accent-lime: #c2ff00` (con varianti hover `#d4ff4d` e `--text-on-lime: #090a0b`), affiancato da token semantici secondari per feedback puntuali (`--accent-emerald`, `--accent-rose`, `--accent-sky`).
-* **Tipografia:** Famiglia sans geometrica (`Plus Jakarta Sans` / `Inter`) con gerarchia display ad alto peso per il greeting hero (*"Ciao ascoltatore?"* / *"Ecco i live per te"*).
-* **Header & Hero Banner:** Top bar essenziale con wordmark/pin in acid-lime a sinistra e action pill compatta a destra; banner di benvenuto in evidenza quando l'utente non ha ancora connesso la sessione.
+* **Superfici:** `--bg-canvas: #000000` (nero OLED), `--bg-surface: #0b0c0e`, `--bg-card: #131417`, `--bg-card-subtle: #1c1e22`, `--border-subtle: #24262b`.
+* **Accento Primario:** `--accent-primary: #6bb8d9` (*Ciano / Carta da Zucchero*, con hover `#85c9e7` e `--text-on-accent: #06131a`), affiancato da token semantici secondari per feedback puntuali (`--accent-emerald`, `--accent-rose`, `--accent-sky`).
+* **Tipografia:** Famiglia sans geometrica (`Plus Jakarta Sans` / `Inter`) con gerarchia display ad alto peso per il greeting hero (*"Ciao ascoltatore?"* / *"Live scelti per te"*).
+* **Header & Hero Banner:** Top bar essenziale con wordmark/pin in carta da zucchero a sinistra e action pill compatta a destra; banner di benvenuto in evidenza quando l'utente non ha ancora connesso la sessione.
 
 ### 4.2 Navigazione Stile iPhone (*iOS Bottom Tab Bar*)
 
@@ -185,7 +185,7 @@ La vista `Mappa` (`EventHeatmapView.tsx`) rende una mappa geospaziale interattiv
   - Estende `L.Layer` sincronizzandosi con gli eventi `move`, `zoom`, `resize` della mappa e scalando al `devicePixelRatio` del display.
   - Per ciascun evento $e \in E_{\text{ranked}}$, proietta $(\text{lat}_e, \text{lon}_e)$ in coordinate viewport $(x_e, y_e)$ e disegna un gradiente radiale gaussiano con intensità:
     $$I(e) = \begin{cases} \dfrac{\text{Score}(e \mid C)}{100} & \text{in modalità "Affinità Context-Driven"} \\ 0.75 & \text{in modalità "Densità Eventi"} \end{cases}$$
-  - Applica una *lookup table* (LUT a $256$ step) sulla matrice dei canali alpha accumulati per mappare la densità in scala termica calibrata sul tema dell'app: blu notte $\rightarrow$ verde smeraldo $\rightarrow$ **acid lime (`#c2ff00`)** $\rightarrow$ ambra/corallo nei focolai ad alta concentrazione.
+  - Applica una *lookup table* (LUT a $256$ step) sulla matrice dei canali alpha accumulati per mappare la densità in scala termica calibrata sul tema dell'app: blu notte $\rightarrow$ ciano/carta da zucchero (`#6bb8d9`) $\rightarrow$ ambra/corallo nei focolai ad alta concentrazione.
 * **Overlay Geometrici & Interazione:**
   - Cerchio tratteggiato del raggio di ricerca attivo $R_{\max}$ attorno a `loc_user` per rendere visivamente interpretabile il decadimento spaziale `Decay_spatial`.
   - Marker interattivi cliccabili sulle singole venue che aprono una scheda rapida ancorata in basso con punteggio, distanza Haversine, meteo e pulsanti *Dettagli* / *Biglietti*.
@@ -273,7 +273,7 @@ Tutte le chiavi devono essere inserite in `.env` nella root del progetto (copiat
 | `FR-07`, `US-04` | `ingestion-service` + `recommendation-service` (`maxPrice`) | Test validazione `422` + casi `priceRanges` mancanti |
 | `FR-10`, `US-06` | React SPA (`eventspot_favorites_v1` in `localStorage`) | Verifica UI + assenza scrittura su MongoDB |
 | `FR-12`, `US-11` | `EventHeatmapView.tsx` (Leaflet + Canvas Gaussian LUT) | Verifica rendering termico su score/densità e marker venue |
-| `U-7`, `US-09` | Design System OLED/Acid-Lime, iPhone Bottom Tab Bar, Footer Legale | Ispezione responsive mobile/desktop e modali Privacy/Cookie |
+| `U-7`, `US-09` | Design System OLED/Carta da Zucchero, iPhone Bottom Tab Bar, Footer Legale | Ispezione responsive mobile/desktop e modali Privacy/Cookie |
 | `FR-13`, `US-12` | `ingestion-service` Multi-Provider Adapter Architecture | Predisposizione `NormalizedEvent` & deduplicazione |
 | `NFR-R1`..`NFR-R8` | Circuit breaker, retry, `stale-if-error`, RFC 9457 | Test tolleranza ai guasti e formati di errore |
 | `O-5`, `US-10` | `@fastify/swagger` OpenAPI 3.1 su `api-gateway` | Esposizione live e validazione schema `/v1/docs/json` |

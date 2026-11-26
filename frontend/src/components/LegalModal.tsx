@@ -74,7 +74,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                 onClick={() => onTabChange(tab.id)}
                 className={`inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
                   active
-                    ? 'bg-accent-lime text-on-lime font-bold'
+                    ? 'bg-accent-primary text-on-accent font-bold'
                     : 'bg-card-subtle text-text-secondary hover:text-white'
                 }`}
               >
@@ -102,7 +102,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                   <strong className="text-white">Pseudonimizzazione:</strong> l'identificativo utente è trasformato tramite HMAC-SHA256 irreversibile.
                 </li>
                 <li>
-                  <strong className="text-white">Cancellazione immediata:</strong> puoi revocare la tua sessione e distruggere qualsiasi chiave crittografica in qualsiasi momento tramite <code className="font-mono text-accent-lime">DELETE /v1/auth/me</code>.
+                  <strong className="text-white">Cancellazione immediata:</strong> puoi revocare la tua sessione e distruggere qualsiasi chiave crittografica in qualsiasi momento tramite <code className="font-mono text-accent-primary">DELETE /v1/auth/me</code>.
                 </li>
               </ul>
 
@@ -132,7 +132,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               <div className="bg-card-subtle border border-border-subtle rounded-2xl p-4 space-y-2 text-xs">
                 <div className="flex justify-between font-bold text-white">
                   <span>eventspot_session</span>
-                  <span className="text-accent-lime">Cookie Tecnico Strettamente Necessario</span>
+                  <span className="text-accent-primary">Cookie Tecnico Strettamente Necessario</span>
                 </div>
                 <p className="text-text-secondary">
                   Attributi: <code className="font-mono text-white">HttpOnly; SameSite=Lax; Path=/</code> (durata max 24h). Indispensabile per associare in sicurezza la sessione autenticata senza esporre token OAuth al codice JavaScript del browser.
@@ -169,13 +169,13 @@ export const LegalModal: React.FC<LegalModalProps> = ({
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <h4 className="text-sm font-bold text-white flex items-center space-x-2">
-                  <Radio className="w-4 h-4 text-accent-lime" />
+                  <Radio className="w-4 h-4 text-accent-primary" />
                   <span>Dal Context-Aware al Context-Driven (Pagano et al., 2016)</span>
                 </h4>
                 <p>
                   Il target della raccomandazione non è uno User ID storico profilato nel tempo, ma lo Stato Contestuale immediato:
                 </p>
-                <div className="bg-card-subtle p-3 rounded-xl font-mono text-xs text-accent-lime border border-border-subtle">
+                <div className="bg-card-subtle p-3 rounded-xl font-mono text-xs text-accent-primary border border-border-subtle">
                   C = ⟨ T_session, slot_now, loc_user, W_now, B_max ⟩
                 </div>
               </div>
@@ -183,7 +183,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div className="bg-card-subtle border border-border-subtle p-3.5 rounded-2xl space-y-1">
                   <div className="flex items-center space-x-2 text-white font-semibold">
-                    <Database className="w-4 h-4 text-accent-lime" />
+                    <Database className="w-4 h-4 text-accent-primary" />
                     <span>Zero Persistenza Storica</span>
                   </div>
                   <p className="text-text-muted">
@@ -193,7 +193,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
                 <div className="bg-card-subtle border border-border-subtle p-3.5 rounded-2xl space-y-1">
                   <div className="flex items-center space-x-2 text-white font-semibold">
-                    <ShieldCheck className="w-4 h-4 text-accent-lime" />
+                    <ShieldCheck className="w-4 h-4 text-accent-primary" />
                     <span>Scoring White-Box & Heatmap</span>
                   </div>
                   <p className="text-text-muted">
@@ -209,7 +209,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
         <div className="p-4 border-t border-border-subtle bg-surface flex justify-end">
           <button
             onClick={onClose}
-            className="px-6 py-2 rounded-full bg-accent-lime hover:bg-accent-lime-hover text-on-lime font-bold text-xs transition-colors"
+            className="px-6 py-2 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-on-accent font-bold text-xs transition-colors"
           >
             Chiudi
           </button>

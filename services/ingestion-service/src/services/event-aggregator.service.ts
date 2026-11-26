@@ -19,6 +19,7 @@ import { musicBrainzEventsAdapter } from '../adapters/musicbrainz.adapter.js';
 import { jsonLdScraperAdapter } from '../adapters/jsonld.adapter.js';
 import { organizerEventsAdapter } from '../adapters/organizer.adapter.js';
 import { MOCK_NORMALIZED_EVENTS } from '../adapters/mock-data.js';
+import { enrichEventCovers } from '../utils/cover-image.js';
 
 export interface SearchEventsResult {
   events: NormalizedEvent[];
@@ -124,11 +125,12 @@ export class EventAggregatorService {
         }
 
         const deduplicated = this.deduplicateEvents(collected);
+        const enriched = await enrichEventCovers(deduplicated, !config.mockExternalProviders);
 
-        await this.saveCachedEvents(cacheKey, deduplicated);
+        await this.saveCachedEvents(cacheKey, enriched);
 
         return {
-          events: deduplicated,
+          events: enriched,
           isStale: false,
           cacheHit: false,
           sourcesUsed,

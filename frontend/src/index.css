@@ -13,10 +13,10 @@
   --text-primary: #ffffff;
   --text-secondary: #a1a5ad;
   --text-muted: #6c707a;
-  --accent-lime: #c2ff00;
-  --accent-lime-hover: #d4ff4d;
-  --accent-lime-glow: rgba(194, 255, 0, 0.16);
-  --text-on-lime: #090a0b;
+  --accent-primary: #6bb8d9;
+  --accent-primary-hover: #85c9e7;
+  --accent-primary-glow: rgba(107, 184, 217, 0.22);
+  --text-on-accent: #06131a;
   --accent-emerald: #34d399;
   --accent-sky: #38bdf8;
   --accent-amber: #fbbf24;
@@ -33,7 +33,7 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent-lime);
+  outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
 }
 
@@ -98,7 +98,7 @@ select {
 
 .leaflet-control-zoom a:hover {
   background-color: var(--bg-card-subtle) !important;
-  color: var(--accent-lime) !important;
+  color: var(--accent-primary) !important;
 }
 
 .leaflet-control-attribution {

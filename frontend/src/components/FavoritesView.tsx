@@ -19,7 +19,7 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-          I tuoi <span className="text-accent-lime">preferiti</span>
+          I tuoi <span className="text-accent-primary">preferiti</span>
         </h1>
         <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
           Concerti salvati localmente sul dispositivo tramite Local-First Privacy-by-Design.
@@ -37,7 +37,7 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
           </p>
           <button
             onClick={onExploreMatches}
-            className="px-6 py-2.5 rounded-full bg-accent-lime hover:bg-accent-lime-hover text-on-lime font-bold text-xs sm:text-sm shadow-lime transition-colors"
+            className="px-6 py-2.5 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-on-accent font-bold text-xs sm:text-sm shadow-accent transition-colors"
           >
             Esplora eventi per te
           </button>
@@ -45,10 +45,10 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
       ) : (
         <div className="space-y-5">
           <div className="bg-card border border-border-subtle rounded-2xl p-3.5 sm:p-4 flex items-start space-x-3 text-xs">
-            <ShieldCheck className="w-4 h-4 text-accent-lime flex-shrink-0 mt-0.5" />
+            <ShieldCheck className="w-4 h-4 text-accent-primary flex-shrink-0 mt-0.5" />
             <p className="text-text-secondary leading-relaxed">
               <strong className="text-white">Archiviazione Local-First: </strong>
-              Questa lista risiede esclusivamente nel <code className="font-mono text-accent-lime">localStorage</code> di questo dispositivo e non viene mai inviata ai server.
+              Questa lista risiede esclusivamente nel <code className="font-mono text-accent-primary">localStorage</code> di questo dispositivo e non viene mai inviata ai server.
             </p>
           </div>
 
@@ -78,6 +78,11 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
                       }
                       alt={fav.name}
                       loading="lazy"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&q=80';
+                      }}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-black/35" />
@@ -101,7 +106,7 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
                   <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                     <div>
                       <div className="flex items-center space-x-1.5 text-xs text-text-secondary mb-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-accent-lime" />
+                        <Calendar className="w-3.5 h-3.5 text-accent-primary" />
                         <span className="capitalize font-medium">{dateStr}</span>
                       </div>
 
@@ -110,7 +115,7 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
                       </h4>
 
                       <p className="text-xs text-text-muted mt-1 flex items-center space-x-1">
-                        <MapPin className="w-3 h-3 text-accent-lime flex-shrink-0" />
+                        <MapPin className="w-3 h-3 text-accent-primary flex-shrink-0" />
                         <span>
                           {fav.venue}, {fav.city}
                         </span>
@@ -128,7 +133,7 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
                         href={fav.ticketUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center space-x-1 px-4 py-1.5 rounded-full text-xs font-bold bg-accent-lime hover:bg-accent-lime-hover text-on-lime transition-colors"
+                        className="inline-flex items-center space-x-1 px-4 py-1.5 rounded-full text-xs font-bold bg-accent-primary hover:bg-accent-primary-hover text-on-accent transition-colors"
                       >
                         <span>Biglietti</span>
                         <ExternalLink className="w-3 h-3" />

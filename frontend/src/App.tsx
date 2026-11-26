@@ -136,7 +136,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-canvas text-text-primary flex flex-col justify-between selection:bg-accent-lime selection:text-on-lime">
+    <div className="min-h-screen bg-canvas text-text-primary flex flex-col justify-between selection:bg-accent-primary selection:text-on-accent">
       {/* Minimal Top Bar */}
       <Header
         session={session}
@@ -186,7 +186,7 @@ export function App() {
             <section className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-base sm:text-lg font-bold text-white flex items-center space-x-2">
-                  <Music className="w-4 h-4 text-accent-lime" />
+                  <Music className="w-4 h-4 text-accent-primary" />
                   <span>Concerti ed eventi selezionati</span>
                 </h3>
                 {matchesData && !loading && (
@@ -243,7 +243,7 @@ export function App() {
                         true
                       )
                     }
-                    className="px-5 py-2 rounded-full bg-accent-lime hover:bg-accent-lime-hover text-on-lime font-bold text-xs transition-colors"
+                    className="px-5 py-2 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-on-accent font-bold text-xs transition-colors"
                   >
                     Estendi raggio a 150 km
                   </button>

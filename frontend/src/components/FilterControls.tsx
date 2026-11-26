@@ -71,10 +71,10 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
           <button
             onClick={handleGetLocation}
             disabled={isLocating}
-            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-card-subtle hover:bg-[#25282e] border border-border-subtle hover:border-accent-lime/50 text-xs font-medium text-white transition-colors"
+            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-card-subtle hover:bg-[#25282e] border border-border-subtle hover:border-accent-primary/50 text-xs font-medium text-white transition-colors"
             title="Rileva posizione GPS corrente dal browser"
           >
-            <Navigation className={`w-3.5 h-3.5 text-accent-lime ${isLocating ? 'animate-spin' : ''}`} />
+            <Navigation className={`w-3.5 h-3.5 text-accent-primary ${isLocating ? 'animate-spin' : ''}`} />
             <span>{isLocating ? 'Rilevamento...' : 'Mio GPS'}</span>
           </button>
 
@@ -90,7 +90,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
                   onClick={() => onChange({ lat: city.lat, lon: city.lon }, true)}
                   className={`px-3 py-1.5 rounded-full font-medium transition-colors ${
                     isSelected
-                      ? 'bg-accent-lime text-on-lime font-bold shadow-subtle'
+                      ? 'bg-accent-primary text-on-accent font-bold shadow-subtle'
                       : 'bg-card-subtle text-text-secondary hover:text-white border border-border-subtle'
                   }`}
                 >
@@ -105,7 +105,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
         <div className="flex flex-wrap items-center gap-2">
           {/* Sorting Dropdown */}
           <div className="flex items-center space-x-1.5 bg-card-subtle px-3 py-1.5 rounded-full border border-border-subtle text-xs">
-            <ArrowUpDown className="w-3.5 h-3.5 text-accent-lime" />
+            <ArrowUpDown className="w-3.5 h-3.5 text-accent-primary" />
             <select
               value={filters.sortBy}
               onChange={(e) =>
@@ -158,7 +158,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
             type="button"
             onClick={onSubmit}
             disabled={loading}
-            className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-accent-lime hover:bg-accent-lime-hover text-on-lime font-bold text-xs shadow-lime disabled:opacity-50"
+            className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-on-accent font-bold text-xs shadow-accent disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             <span>Aggiorna</span>
@@ -173,7 +173,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
           <div className="space-y-2">
             <div className="flex justify-between items-center text-text-secondary font-medium">
               <span className="flex items-center space-x-1.5">
-                <MapPin className="w-3.5 h-3.5 text-accent-lime" />
+                <MapPin className="w-3.5 h-3.5 text-accent-primary" />
                 <span>Raggio di ricerca</span>
               </span>
               <span className="font-bold text-white">{filters.radiusKm} km</span>
@@ -185,7 +185,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
               step="5"
               value={filters.radiusKm}
               onChange={(e) => onChange({ radiusKm: parseInt(e.target.value, 10) })}
-              className="w-full accent-[#c2ff00] bg-card-subtle rounded-lg cursor-pointer"
+              className="w-full accent-[#6bb8d9] bg-card-subtle rounded-lg cursor-pointer"
             />
             <div className="flex justify-between text-[11px] text-text-muted">
               <span>10 km</span>
@@ -199,7 +199,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
           <div className="space-y-2">
             <div className="flex justify-between items-center text-text-secondary font-medium">
               <span className="flex items-center space-x-1.5">
-                <Euro className="w-3.5 h-3.5 text-accent-lime" />
+                <Euro className="w-3.5 h-3.5 text-accent-primary" />
                 <span>Budget massimo</span>
               </span>
               <span className="font-bold text-white">
@@ -214,7 +214,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
                   onClick={() => onChange({ maxPrice: presetVal }, true)}
                   className={`px-3 py-1 rounded-full border text-xs font-medium ${
                     filters.maxPrice === presetVal
-                      ? 'bg-accent-lime text-on-lime border-accent-lime font-bold'
+                      ? 'bg-accent-primary text-on-accent border-accent-primary font-bold'
                       : 'bg-card-subtle text-text-secondary border-border-subtle hover:text-white'
                   }`}
                 >
@@ -227,7 +227,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
                 type="checkbox"
                 checked={filters.includeUnpriced}
                 onChange={(e) => onChange({ includeUnpriced: e.target.checked }, true)}
-                className="accent-[#c2ff00] rounded"
+                className="accent-[#6bb8d9] rounded"
               />
               <span>Includi eventi senza prezzo su Ticketmaster</span>
             </label>
@@ -250,7 +250,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
                       dateFrom: e.target.value ? new Date(e.target.value).toISOString() : undefined,
                     })
                   }
-                  className="w-full bg-card-subtle border border-border-subtle rounded-xl px-2.5 py-1.5 text-white text-xs focus:outline-none focus:border-accent-lime"
+                  className="w-full bg-card-subtle border border-border-subtle rounded-xl px-2.5 py-1.5 text-white text-xs focus:outline-none focus:border-accent-primary"
                 />
               </div>
               <div>
@@ -263,7 +263,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
                       dateTo: e.target.value ? new Date(e.target.value).toISOString() : undefined,
                     })
                   }
-                  className="w-full bg-card-subtle border border-border-subtle rounded-xl px-2.5 py-1.5 text-white text-xs focus:outline-none focus:border-accent-lime"
+                  className="w-full bg-card-subtle border border-border-subtle rounded-xl px-2.5 py-1.5 text-white text-xs focus:outline-none focus:border-accent-primary"
                 />
               </div>
             </div>

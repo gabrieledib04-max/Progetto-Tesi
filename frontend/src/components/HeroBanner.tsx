@@ -18,7 +18,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
     return (
       <section className="pt-1 pb-1">
         <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
-          Live scelti <span className="text-accent-lime">per te</span>
+          Live scelti <span className="text-accent-primary">per te</span>
         </h1>
       </section>
     );
@@ -27,7 +27,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   return (
     <section className="space-y-5 pt-2">
       <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-none">
-        Ciao <span className="text-accent-lime">ascoltatore?</span>
+        Ciao <span className="text-accent-primary">ascoltatore?</span>
       </h1>
 
       <div className="bg-card border border-border-subtle rounded-2xl p-5 sm:p-6 shadow-card space-y-4">
@@ -44,7 +44,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
           <button
             onClick={onSpotifyLogin}
             disabled={loading}
-            className="inline-flex items-center space-x-2 px-6 py-2.5 rounded-full bg-accent-lime hover:bg-accent-lime-hover text-on-lime font-bold text-xs sm:text-sm shadow-lime disabled:opacity-50"
+            className="inline-flex items-center space-x-2 px-6 py-2.5 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-on-accent font-bold text-xs sm:text-sm shadow-accent disabled:opacity-50"
           >
             <Music className="w-4 h-4 stroke-[2.5]" />
             <span>Accedi con Spotify</span>
@@ -55,7 +55,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
             disabled={loading}
             className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-card-subtle hover:bg-[#25282e] border border-border-active text-white font-semibold text-xs sm:text-sm disabled:opacity-50"
           >
-            <Sparkles className="w-3.5 h-3.5 text-accent-lime" />
+            <Sparkles className="w-3.5 h-3.5 text-accent-primary" />
             <span>Prova Demo 1-Click</span>
           </button>
         </div>

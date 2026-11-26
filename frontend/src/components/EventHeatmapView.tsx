@@ -24,8 +24,8 @@ interface HeatPoint {
 }
 
 /**
- * Generates a 256-entry RGBA lookup table matching EventSpot OLED + Acid Lime palette:
- * Cool Deep Sky -> Emerald -> Acid Lime (#c2ff00) -> Hot Amber -> Blaze Coral
+ * Generates a 256-entry RGBA lookup table matching EventSpot OLED + Carta da Zucchero palette:
+ * Deep Navy -> Cyan -> Carta da Zucchero (#6bb8d9) -> Hot Amber -> Blaze Coral
  */
 function buildThermalPalette(): Uint8ClampedArray {
   const canvas = document.createElement('canvas');
@@ -35,12 +35,11 @@ function buildThermalPalette(): Uint8ClampedArray {
   if (!ctx) return new Uint8ClampedArray(256 * 4);
 
   const grad = ctx.createLinearGradient(0, 0, 256, 0);
-  grad.addColorStop(0.0, 'rgba(14, 165, 233, 0)');
-  grad.addColorStop(0.22, 'rgba(14, 165, 233, 0.55)');
-  grad.addColorStop(0.45, 'rgba(16, 185, 129, 0.72)');
-  grad.addColorStop(0.68, 'rgba(194, 255, 0, 0.85)');
-  grad.addColorStop(0.86, 'rgba(255, 159, 10, 0.92)');
-  grad.addColorStop(1.0, 'rgba(255, 59, 48, 0.96)');
+  grad.addColorStop(0.0, 'rgba(30, 58, 138, 0)');
+  grad.addColorStop(0.25, 'rgba(56, 189, 248, 0.55)');
+  grad.addColorStop(0.50, 'rgba(107, 184, 217, 0.78)');
+  grad.addColorStop(0.75, 'rgba(245, 158, 11, 0.90)');
+  grad.addColorStop(1.0, 'rgba(239, 68, 68, 0.96)');
 
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 256, 1);
@@ -228,12 +227,22 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    // Dark OLED tiles (CartoDB DarkMatter)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    // Dark OLED tiles: optional MapTiler Dark if VITE_MAPTILER_API_KEY is set, otherwise free CartoDB DarkMatter (no key needed)
+    const mapTilerKey = import.meta.env.VITE_MAPTILER_API_KEY as string | undefined;
+    const tileUrl =
+      mapTilerKey && !mapTilerKey.startsWith('your_')
+        ? `https://api.maptiler.com/maps/dataviz-dark/256/{z}/{x}/{y}.png?key=${mapTilerKey}`
+        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+
+    L.tileLayer(tileUrl, {
       subdomains: 'abcd',
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap &copy; CARTO',
     }).addTo(map);
+
+    const resizeTimer = window.setTimeout(() => {
+      map.invalidateSize();
+    }, 120);
 
     const heatLayer = new ThermalCanvasLayer([]);
     heatLayer.addTo(map);
@@ -251,6 +260,7 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
     markersLayerRef.current = markersGroup;
 
     return () => {
+      window.clearTimeout(resizeTimer);
       map.remove();
       mapInstanceRef.current = null;
       heatLayerRef.current = null;
@@ -275,18 +285,18 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
     userLayer.clearLayers();
     L.circle([filters.lat, filters.lon], {
       radius: filters.radiusKm * 1000,
-      color: '#c2ff00',
+      color: '#6bb8d9',
       weight: 1.5,
       opacity: 0.35,
       dashArray: '6 6',
-      fillColor: '#c2ff00',
+      fillColor: '#6bb8d9',
       fillOpacity: 0.02,
       interactive: false,
     }).addTo(userLayer);
 
     const userDotIcon = L.divIcon({
       className: 'eventspot-user-pin',
-      html: `<div style="width:16px;height:16px;border-radius:9999px;background:#c2ff00;border:3px solid #090a0b;box-shadow:0 0 14px rgba(194,255,0,0.9);"></div>`,
+      html: `<div style="width:16px;height:16px;border-radius:9999px;background:#6bb8d9;border:3px solid #06131a;box-shadow:0 0 14px rgba(107,184,217,0.9);"></div>`,
       iconSize: [16, 16],
       iconAnchor: [8, 8],
     });
@@ -299,9 +309,9 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
       if (!lat || !lon) return;
 
       const isSelected = m.event.id === selectedMatchId;
-      const bg = isSelected ? '#c2ff00' : 'rgba(19, 20, 23, 0.92)';
-      const fg = isSelected ? '#090a0b' : '#ffffff';
-      const border = isSelected ? '#ffffff' : 'rgba(194, 255, 0, 0.55)';
+      const bg = isSelected ? '#6bb8d9' : 'rgba(19, 20, 23, 0.92)';
+      const fg = isSelected ? '#06131a' : '#ffffff';
+      const border = isSelected ? '#ffffff' : 'rgba(107, 184, 217, 0.65)';
       const scale = isSelected ? 'transform:scale(1.12);' : '';
 
       const pinIcon = L.divIcon({
@@ -360,7 +370,7 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Mappa termica <span className="text-accent-lime">live</span>
+            Mappa termica <span className="text-accent-primary">live</span>
           </h1>
           <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
             Intensità calcolata su score Context-Driven, raggio {filters.radiusKm} km e prossimità venue.
@@ -373,7 +383,7 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
             onClick={() => setHeatMode('score')}
             className={`inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
               heatMode === 'score'
-                ? 'bg-accent-lime text-on-lime font-bold shadow-subtle'
+                ? 'bg-accent-primary text-on-accent font-bold shadow-subtle'
                 : 'text-text-secondary hover:text-white'
             }`}
           >
@@ -384,7 +394,7 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
             onClick={() => setHeatMode('density')}
             className={`inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
               heatMode === 'density'
-                ? 'bg-accent-lime text-on-lime font-bold shadow-subtle'
+                ? 'bg-accent-primary text-on-accent font-bold shadow-subtle'
                 : 'text-text-secondary hover:text-white'
             }`}
           >
@@ -403,7 +413,7 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
               onClick={handleLocateMe}
               className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-full bg-card/90 hover:bg-card backdrop-blur-xl border border-white/10 text-xs font-semibold text-white shadow-subtle"
             >
-              <Navigation className="w-3.5 h-3.5 text-accent-lime" />
+              <Navigation className="w-3.5 h-3.5 text-accent-primary" />
               <span>GPS</span>
             </button>
 
@@ -417,7 +427,7 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
                   onClick={() => onChangeLocation(city.lat, city.lon)}
                   className={`px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-xl border transition-colors ${
                     active
-                      ? 'bg-accent-lime text-on-lime border-accent-lime font-bold'
+                      ? 'bg-accent-primary text-on-accent border-accent-primary font-bold'
                       : 'bg-card/85 text-text-secondary hover:text-white border-white/10'
                   }`}
                 >
@@ -432,7 +442,7 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
             disabled={matches.length === 0}
             className="pointer-events-auto inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-card/90 hover:bg-card backdrop-blur-xl border border-white/10 text-xs font-semibold text-white shadow-subtle disabled:opacity-40"
           >
-            <Maximize2 className="w-3.5 h-3.5 text-accent-lime" />
+            <Maximize2 className="w-3.5 h-3.5 text-accent-primary" />
             <span>Adatta eventi ({matches.length})</span>
           </button>
         </div>
@@ -443,7 +453,7 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
         {/* Loading Shimmer Overlay */}
         {loading && (
           <div className="absolute inset-0 z-[360] bg-black/45 backdrop-blur-[2px] flex items-center justify-center pointer-events-none">
-            <div className="px-4 py-2 rounded-full bg-card border border-border-active text-xs font-semibold text-accent-lime shadow-popover">
+            <div className="px-4 py-2 rounded-full bg-card border border-border-active text-xs font-semibold text-accent-primary shadow-popover">
               Aggiornamento mappa termica...
             </div>
           </div>
@@ -456,7 +466,7 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
               <span>{heatMode === 'score' ? 'Calore Match' : 'Densità Live'}</span>
               <span className="text-text-muted">{matches.length} venue</span>
             </div>
-            <div className="w-36 h-2 rounded-full bg-gradient-to-r from-[#0ea5e9] via-[#10b981] via-[#c2ff00] to-[#ff3b30]" />
+            <div className="w-36 h-2 rounded-full bg-gradient-to-r from-[#1e3a8a] via-[#6bb8d9] via-[#f59e0b] to-[#ef4444]" />
             <div className="flex justify-between text-[10px] text-text-muted">
               <span>Bassa</span>
               <span>Media</span>
@@ -471,17 +481,25 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center space-x-3 min-w-0">
                 <img
-                  src={selectedMatch.event.imageUrl}
+                  src={
+                    selectedMatch.event.imageUrl ||
+                    'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&q=80'
+                  }
                   alt={selectedMatch.event.name}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=800&q=80';
+                  }}
                   className="w-14 h-14 rounded-xl object-cover flex-shrink-0 bg-card-subtle"
                 />
                 <div className="min-w-0">
                   <div className="flex items-center space-x-2 mb-0.5">
-                    <span className="px-2 py-0.5 rounded-full bg-accent-lime text-on-lime text-[11px] font-extrabold">
+                    <span className="px-2 py-0.5 rounded-full bg-accent-primary text-on-accent text-[11px] font-extrabold">
                       {selectedMatch.score}/100
                     </span>
                     <span className="text-[11px] text-text-muted flex items-center space-x-1">
-                      <MapPin className="w-3 h-3 text-accent-lime" />
+                      <MapPin className="w-3 h-3 text-accent-primary" />
                       <span>{selectedMatch.distanceKm} km</span>
                     </span>
                   </div>
@@ -505,7 +523,7 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
 
             <div className="flex flex-wrap items-center gap-2 text-[11px] text-text-secondary">
               <span className="inline-flex items-center space-x-1">
-                <Calendar className="w-3.5 h-3.5 text-accent-lime" />
+                <Calendar className="w-3.5 h-3.5 text-accent-primary" />
                 <span>
                   {new Date(selectedMatch.event.startDateTime).toLocaleDateString('it-IT', {
                     day: 'numeric',
@@ -523,7 +541,7 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
                   </>
                 ) : (
                   <>
-                    <ShieldCheck className="w-3.5 h-3.5 text-accent-lime" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-accent-primary" />
                     <span>Indoor</span>
                   </>
                 )}
@@ -560,7 +578,7 @@ export const EventHeatmapView: React.FC<EventHeatmapViewProps> = ({
                   href={selectedMatch.event.ticketUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-1 px-4 py-1.5 rounded-full bg-accent-lime hover:bg-accent-lime-hover text-on-lime font-bold text-xs"
+                  className="inline-flex items-center space-x-1 px-4 py-1.5 rounded-full bg-accent-primary hover:bg-accent-primary-hover text-on-accent font-bold text-xs"
                 >
                   <span>Biglietti</span>
                   <ExternalLink className="w-3 h-3" />

@@ -41,10 +41,10 @@ export const EventCard: React.FC<EventCardProps> = ({
 
   const getScoreBadge = (val: number) => {
     if (val >= 85) {
-      return 'bg-accent-lime text-on-lime font-extrabold shadow-lime';
+      return 'bg-accent-primary text-on-accent font-extrabold shadow-accent';
     }
     if (val >= 70) {
-      return 'bg-card/90 text-accent-lime border border-accent-lime/40 font-bold backdrop-blur-md';
+      return 'bg-card/90 text-accent-primary border border-accent-primary/40 font-bold backdrop-blur-md';
     }
     return 'bg-card/90 text-white border border-border-active font-bold backdrop-blur-md';
   };
@@ -60,6 +60,7 @@ export const EventCard: React.FC<EventCardProps> = ({
           }
           alt={event.name}
           loading="lazy"
+          referrerPolicy="no-referrer"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           onError={(e) => {
             (e.target as HTMLImageElement).src =
@@ -104,14 +105,14 @@ export const EventCard: React.FC<EventCardProps> = ({
               </>
             ) : (
               <>
-                <ShieldCheck className="w-3.5 h-3.5 text-accent-lime" />
+                <ShieldCheck className="w-3.5 h-3.5 text-accent-primary" />
                 <span>Indoor coperto</span>
               </>
             )}
           </span>
 
           <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10">
-            <MapPin className="w-3.5 h-3.5 text-accent-lime" />
+            <MapPin className="w-3.5 h-3.5 text-accent-primary" />
             <span>{distanceKm} km</span>
           </span>
         </div>
@@ -121,14 +122,14 @@ export const EventCard: React.FC<EventCardProps> = ({
       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
         <div>
           <div className="flex items-center space-x-2 text-xs text-text-secondary mb-1.5">
-            <Calendar className="w-3.5 h-3.5 text-accent-lime flex-shrink-0" />
+            <Calendar className="w-3.5 h-3.5 text-accent-primary flex-shrink-0" />
             <span className="capitalize font-medium">{dateFormatted}</span>
             <span className="text-text-muted">alle {timeFormatted}</span>
           </div>
 
           <h3
             onClick={onSelectEvent}
-            className="text-base sm:text-lg font-bold text-white leading-snug line-clamp-2 hover:text-accent-lime cursor-pointer transition-colors"
+            className="text-base sm:text-lg font-bold text-white leading-snug line-clamp-2 hover:text-accent-primary cursor-pointer transition-colors"
           >
             {event.name}
           </h3>
@@ -146,7 +147,7 @@ export const EventCard: React.FC<EventCardProps> = ({
 
         {/* White-box Explainability */}
         <div className="bg-card-subtle rounded-xl p-3 text-xs space-y-1">
-          <div className="flex items-center space-x-1.5 text-accent-lime font-semibold text-[11px]">
+          <div className="flex items-center space-x-1.5 text-accent-primary font-semibold text-[11px]">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Perché questo match</span>
           </div>
@@ -173,7 +174,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] bg-card-subtle p-3 rounded-xl">
               <div className="flex justify-between">
                 <span className="text-text-muted">Semantica</span>
-                <span className="font-mono font-semibold text-accent-lime">
+                <span className="font-mono font-semibold text-accent-primary">
                   {(subScores.semanticSim * 100).toFixed(0)}%
                 </span>
               </div>
@@ -225,7 +226,7 @@ export const EventCard: React.FC<EventCardProps> = ({
               href={event.ticketUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center space-x-1 px-4 py-1.5 rounded-full text-xs font-bold bg-accent-lime hover:bg-accent-lime-hover text-on-lime shadow-subtle transition-colors"
+              className="inline-flex items-center space-x-1 px-4 py-1.5 rounded-full text-xs font-bold bg-accent-primary hover:bg-accent-primary-hover text-on-accent shadow-subtle transition-colors"
             >
               <span>Biglietti</span>
               <ExternalLink className="w-3 h-3" />

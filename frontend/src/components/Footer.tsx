@@ -46,7 +46,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenLegal }) => {
             href="/v1/docs"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-accent-lime transition-colors"
+            className="hover:text-accent-primary transition-colors"
           >
             OpenAPI Docs
           </a>

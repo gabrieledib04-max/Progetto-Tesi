@@ -94,8 +94,8 @@ Ogni requisito possiede un identificativo univoco (`O-`, `US-`, `FR-`, `U-`, `NF
 * `U-4` Badge contestuali chiari (es. stato meteo della serata, fascia di prezzo, distanza in km e motivazione del match).
 * `U-5` Supporto localizzazione italiana coerente (formati data, valuta EUR e distanze in km).
 * `U-6` Informativa trasparente su Privacy, Cookie e assenza di profilazione storica persistente accessibile dal footer inferiore.
-* `U-7` **Design System Dark OLED + Acid Lime & Navigazione iOS-Style:**
-  - Tema visivo basato su sfondo nero OLED ad alto contrasto (`#000000`), superfici elevate grigio antracite (`#141517`) con bordi sottili (`#26282c`) e accento primario *Acid Lime* (`#c2ff00`) per call-to-action, badge di stato e focus visivo.
+* `U-7` **Design System Dark OLED + Ciano Carta da Zucchero & Navigazione iOS-Style:**
+  - Tema visivo basato su sfondo nero OLED ad alto contrasto (`#000000`), superfici elevate grigio antracite (`#131417`) con bordi sottili (`#24262b`) e accento primario *Ciano / Carta da Zucchero* (`#6bb8d9`) per call-to-action, badge di stato e focus visivo.
   - **Menu di navigazione stile iPhone (*iOS Tab Bar*):** dock inferiore traslucido *frosted-glass* (`backdrop-blur`) con icone ed etichette impilate per le 4 viste principali (`Per te`, `Mappa`, `Preferiti`, `Account`), garantendo ergonomia *thumb-zone* su mobile e stile app nativa su desktop.
   - **Footer dedicato a Privacy, Cookie e Note Legali:** collocazione ordinata di tutte le voci legali e di trasparenza (`Privacy`, `Cookie`, `Termini`, `Privacy-by-Design`, `OpenAPI 3.1`, `GitHub`) nel footer inferiore della pagina, lasciando l'header superiore essenziale e pulito.
 
@@ -157,7 +157,7 @@ Ogni requisito possiede un identificativo univoco (`O-`, `US-`, `FR-`, `U-`, `NF
 | `M1` — API Gateway e Auth | 3–4 | OAuth 2.0 PKCE Spotify, gestione sessioni cifrate, refresh serializzato, sicurezza | Completato |
 | `M2` — Ingestion Service | 5–7 | Adapter Spotify (`recently-played`), arricchimento generi, Open-Meteo, Ticketmaster + cache TTL | Completato |
 | `M3` — Recommendation Engine | 8–10 | Motore TF-IDF/Cosine, congruenza `weekday-hour`, decadimento spaziale, meteo, filtro prezzo, Explainability | Completato |
-| `M4` — Client React OLED + iOS UI + Heatmap | 11–13 | UI OLED/Acid-Lime, Tab Bar stile iPhone, Mappa Termica Leaflet Canvas, Privacy/Cookie in footer, `localStorage` | Completato |
+| `M4` — Client React OLED + iOS UI + Heatmap | 11–13 | UI OLED/Carta da Zucchero, Tab Bar stile iPhone, Mappa Termica Leaflet Canvas, Privacy/Cookie in footer, `localStorage` | Completato |
 | `M5` — Validazione Tesi & Multi-Provider | 14–16 | Evaluation Harness Python (Context-Driven vs Baseline 2D), estensione Adapter multi-sorgente, load test `k6`, stesura tesi | In corso |
 
 ### 6.2 Rischi Principali e Mitigazioni

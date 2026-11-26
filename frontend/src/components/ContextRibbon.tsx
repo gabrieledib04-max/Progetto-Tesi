@@ -59,7 +59,7 @@ export const ContextRibbon: React.FC<ContextRibbonProps> = ({
               className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
                 isFallback
                   ? 'bg-accent-amber/15 text-accent-amber border border-accent-amber/30'
-                  : 'bg-accent-lime/15 text-accent-lime border border-accent-lime/30'
+                  : 'bg-accent-primary/15 text-accent-primary border border-accent-primary/30'
               }`}
             >
               {isFallback ? (
@@ -99,7 +99,7 @@ export const ContextRibbon: React.FC<ContextRibbonProps> = ({
               className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
                 weather.isAdverse
                   ? 'bg-accent-rose/15 text-accent-rose'
-                  : 'bg-accent-lime/15 text-accent-lime'
+                  : 'bg-accent-primary/15 text-accent-primary'
               }`}
             >
               {weather.isAdverse ? (
@@ -153,7 +153,7 @@ export const ContextRibbon: React.FC<ContextRibbonProps> = ({
             {onOpenHeatmap && (
               <button
                 onClick={onOpenHeatmap}
-                className="p-2 rounded-lg bg-accent-lime/15 hover:bg-accent-lime text-accent-lime hover:text-on-lime transition-colors flex-shrink-0"
+                className="p-2 rounded-lg bg-accent-primary/15 hover:bg-accent-primary text-accent-primary hover:text-on-accent transition-colors flex-shrink-0"
                 title="Apri mappa termica"
                 aria-label="Apri mappa termica"
               >
@@ -167,7 +167,7 @@ export const ContextRibbon: React.FC<ContextRibbonProps> = ({
       {/* Session Musical Footprint */}
       <div className="mt-4 pt-3.5 border-t border-border-subtle flex flex-wrap items-center gap-2">
         <span className="text-xs text-text-muted flex items-center space-x-1.5 font-medium mr-1">
-          <Radio className="w-3.5 h-3.5 text-accent-lime" />
+          <Radio className="w-3.5 h-3.5 text-accent-primary" />
           <span>Sessione recente:</span>
         </span>
 
@@ -178,7 +178,7 @@ export const ContextRibbon: React.FC<ContextRibbonProps> = ({
               className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-card-subtle text-text-primary text-xs border border-border-subtle"
             >
               <span className="font-medium">{tag.name}</span>
-              <span className="text-accent-lime font-mono text-[10px]">
+              <span className="text-accent-primary font-mono text-[10px]">
                 {(tag.weight * 100).toFixed(0)}%
               </span>
             </span>
